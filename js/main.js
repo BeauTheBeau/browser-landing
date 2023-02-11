@@ -1,3 +1,11 @@
+// rember https://www.google.com/s2/favicons?domain=
+
+/*
+	==========================================
+	LOCAL STORAGE
+	==========================================
+ */
+
 // Get SETTINGS from local storage
 let SETTINGS = JSON.parse(localStorage.getItem('SETTINGS'));
 let QUERIES = JSON.parse(localStorage.getItem('QUERIES'));
@@ -54,7 +62,11 @@ if (QUERIES === null) {
 }
 localStorage.setItem('QUERIES', JSON.stringify(QUERIES));
 
-console.log(QUERIES);
+/*
+	==========================================
+	VARIABLES
+	==========================================
+ */
 
 const elements = {
 	title: document.getElementById('title'),
@@ -62,81 +74,81 @@ const elements = {
 	recentlyViewed: document.getElementById('recently_viewed')
 }
 
+/*
+	==========================================
+	MISC
+	==========================================
+ */
+
 document.title = SETTINGS.title;
-document.getElementById('title').innerText = SETTINGS.title;
-elements.search.placeholder = "search " + SETTINGS.search.engines[SETTINGS.search.default].name;
+elements.search.placeholder = "Search " + SETTINGS.search.engines[SETTINGS.search.default].name;
 
+/*
+	==========================================
+	SEARCH
+	==========================================
+ */
 
-// CHANGE TAB TITLE
-document.getElementById('title').addEventListener('input', function () {
+function search(query) {
+	if (query === '') return console.log('No query');
 
-	if (this.innerText === "") {
-		this.innerText = SETTINGS.title;
-	} else {
-		SETTINGS.title = this.innerText;
-		localStorage.setItem('SETTINGS', JSON.stringify(SETTINGS));
-		document.title = SETTINGS.title;
-	}
+	// Add query to QUERIES
+	if (QUERIES[query] === undefined) QUERIES[query] = 1;
+	else QUERIES[query]++;
 
-}, false);
+	localStorage.setItem('QUERIES', JSON.stringify(QUERIES));
 
-// ON ENTER IN SEARCH TAB
-document.getElementById('search_tab').addEventListener('keydown', function (e) {
-	if (e.key === "Enter") {
-		const query = this.value.trim();
+	// If it begins with a protocol, redirect to it
+	if (query.startsWith('http://') || query.startsWith('https://')) window.location.href = query;
+	else window.location.href = SETTINGS.search.engines[SETTINGS.search.default].url + query;
+}
 
-		// Check if query is in QUERIES
-		if (QUERIES[query] === undefined) QUERIES[query] = 1; else QUERIES[query]++;
-		localStorage.setItem('QUERIES', JSON.stringify(QUERIES));
-
-		// If it starts with a protocol, don't add the search engine URL
-		if (query.startsWith('http://') || query.startsWith('https://')) {
-			return window.location.href = query;
-		}
-
-		window.location.href = SETTINGS.search.engines[SETTINGS.search.default].url + this.value;
-	}
-}, false);
-
-
-// POPULATE RECENTLY VIEWED
-
-// Sort QUERIES by value
-const sortedQueries = Object.keys(QUERIES).sort(function (a, b) {
-	return QUERIES[b] - QUERIES[a];
+elements.search.addEventListener('keydown', (e) => {	
+	if (e.key === 'Enter') search(elements.search.value);
 });
 
-// Get the first SETTINGS.recentlyViewed.max queries
-const recentlyViewed = sortedQueries.slice(0, SETTINGS.recentlyViewed.max);
+/*
+	==========================================
+	RECENTLY VIEWED
+	==========================================
+ */
 
-// Create a list item for each query
-recentlyViewed.forEach(function (query) {
+function updateRecentlyViewed() {
+	// Clear the list
+	elements.recentlyViewed.innerHTML = '';
 
-	const li = document.createElement('div');
-	li.classList.add('grid-item');
-	li.innerText = query;
-	li.addEventListener('click', function () {
-		QUERIES[query]++;
-		localStorage.setItem('QUERIES', JSON.stringify(QUERIES));
-		window.location.href = SETTINGS.search.engines[SETTINGS.search.default].url + query;
-	});
-	elements.recentlyViewed.appendChild(li);
-})
+	// Sort QUERIES by value
+	let sortedQueries = Object.keys(QUERIES).sort((a, b) => QUERIES[b] - QUERIES[a]);
 
-// If SETTINGS.recentlyViewed.enabled is false or there are no queries, hide the tab
-if (!SETTINGS.recentlyViewed.enabled) {
-	elements.recentlyViewed.style.display = 'none';
+	// Loop through sorted QUERIES
+	for (let i = 0; i < sortedQueries.length; i++) {
+		// If the max has been reached, stop
+		if (i >= SETTINGS.recentlyViewed.max) break;
+
+		// Create list item
+		let li = document.createElement('li');
+		li.innerHTML = sortedQueries[i];
+		li.addEventListener('click', () => search(sortedQueries[i]));
+
+		const favicon = document.createElement('img');
+		// quality of 512
+		favicon.src = `https://www.google.com/s2/favicons?domain=${sortedQueries[i]}&sz=16`;
+		favicon.alt = sortedQueries[i] + ' favicon'; 
+		favicon.width = 16;
+		favicon.height = 16;
+		li.prepend(favicon);
+		
+		
+		// Append list item to list
+		elements.recentlyViewed.appendChild(li);
+	}
 }
 
-if (recentlyViewed.length === 0) {
-	const li = document.createElement('div');
-	li.classList.add('grid-item');
-	li.innerText = 'Your search history is empty';
-	elements.recentlyViewed.appendChild(li);
-}
+updateRecentlyViewed();
 
-// If SETTINGS.search.enabled is false, hide the tab
-if (!SETTINGS.search.enabled) {
-	elements.search.style.display = 'none';
-}
+/*
+	==========================================
+	CONTEXT MENU
+	==========================================
+ */
 

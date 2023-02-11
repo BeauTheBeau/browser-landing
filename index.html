@@ -7,14 +7,37 @@
 </head>
 <body>
 
-<h1 contenteditable="true" id="title">New Tab</h1>
+<main>
+
+	<div>
+		<h1 contenteditable="true" id="title">New Tab</h1>
+		<label for="search_tab"></label>
+		<input autocomplete="false" autofocus id="search_tab" placeholder="Search ..." type="text">
+	</div>
+
+	<div>
+		<details>
+			<summary>More</summary>
+			<p>Recently Viewed</p>
+			<ul class="recently_viewed_container" id="recently_viewed"></ul>
+			<hr>
+
+			<div class="buttons">
+				<button id="clear_recently_viewed">Clear Recently Viewed</button>
+				<button id="clear_bookmarks">Settings</button>
+			</div>
+
+			<sub>version 1.0.0</sub>
+
+		</details>
 
 
-<label for="search_tab"></label>
-<input autofocus id="search_tab" autocomplete="false" placeholder="Search Google" type="text">
-<div class="grid" id="recently_viewed"></div>
+	</div>
 
-<script src="js/main.js"></script>
+</main>
+
+
+<script src="js/main.js" type="module"></script>
 
 </body>
 </html>

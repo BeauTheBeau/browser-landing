@@ -1,0 +1,7 @@
+{
+  "name": "browser-landing",
+  "version": "1.0.0",
+  "dependencies": {
+    "@dallegoet/chatgpt-api": "^1.0.6"
+  }
+}
