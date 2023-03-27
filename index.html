@@ -4,38 +4,32 @@
 	<meta charset="UTF-8">
 	<title>New Tab</title>
 	<link href="css/main.css" rel="stylesheet">
+
+	<link rel="stylesheet"
+		  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
 </head>
 <body>
 
+<img alt="Background Image" id="background__image" class="background__image" src="https://source.unsplash.com/featured/1920x1080/?cat">
+
 <main>
-
-	<div>
-		<h1 contenteditable="true" id="title">New Tab</h1>
-		<label for="search_tab"></label>
-		<input autocomplete="false" autofocus id="search_tab" placeholder="Search ..." type="text">
+	<h1 class="time" id="time">11:40</h1>
+	<label for="search"></label>
+	<div class="row">
+		<input type="text" class="search" id="search" placeholder="Search" autofocus>
+		<button id="search-button">
+			<span class="material-symbols-outlined">search</span>
+		</button>
 	</div>
-
-	<div>
-		<details>
-			<summary>More</summary>
-			<p>Recently Viewed</p>
-			<ul class="recently_viewed_container" id="recently_viewed"></ul>
-			<hr>
-
-<!--			<div class="buttons">-->
-<!--				<button id="clear_recently_viewed">Clear Recently Viewed</button>-->
-<!--				<button id="clear_bookmarks">Settings</button>-->
-<!--			</div>-->
-
-			<sub>version 1.0.0</sub>
-
-		</details>
-
-
-	</div>
-
 </main>
 
+<div class="bottom__bar">
+	<a href="https://github.com/beauthebeau/browser-landing" title="Source Code on GitHub"><span class="material-symbols-outlined">code</span></a>
+	<button id="new__image" title="New Image"><span
+			class="material-symbols-outlined">refresh</span></button>
+
+</div>
 
 <script src="js/main.js" type="module"></script>
 
